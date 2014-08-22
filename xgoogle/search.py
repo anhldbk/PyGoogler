@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 #!/usr/bin/python
 # encoding: utf-8
 #
@@ -293,7 +294,7 @@ class GoogleSearch(object):
                     # xgoogle doesn't extract the description well
                     # so I re-write it using html2text library instead
                     ret = t.getPlainTextContent()
-                    ret = html2text.html2text(ret).replace('\n','')
+                    ret = html2text.html2text(ret).replace(u'\n', u' ')
                     desc_strs.append(ret)
 
                     # Old code from xgoogle
@@ -305,7 +306,10 @@ class GoogleSearch(object):
         looper(desc_div.find('wbr'))  # BeautifulSoup does not self-close <wbr>
 
         desc = ''.join(s for s in desc_strs if s)
-        return self._html_unescape(desc)
+
+        return desc
+        # old code
+        # return self._html_unescape(desc)
 
     def _html_unescape(self, str):
         def entity_replacer(m):
@@ -378,30 +382,4 @@ class BlogSearch(GoogleSearch):
             url = urllib.unquote(match.group(1))
         return title, url
 
-    def _extract_description(self, result):
-        desc_td = result.findNext('td')
-        if not desc_td:
-            self._maybe_raise(ParseError, "Description tag in Google search result was not found", result)
-            return None
-
-        desc_strs = []
-
-        def looper(tag):
-            if not tag: return
-            for t in tag:
-                try:
-                    if t.name == 'br': break
-                except AttributeError:
-                    pass
-
-                try:
-                    desc_strs.append(t.string)
-                except AttributeError:
-                    desc_strs.append(t)
-
-        looper(desc_td)
-        looper(desc_td.find('wbr'))  # BeautifulSoup does not self-close <wbr>
-
-        desc = ''.join(s for s in desc_strs if s)
-        return self._html_unescape(desc)
 

@@ -8,6 +8,7 @@ sys.path.append('.')
 from xgoogle.search import GoogleSearch, SearchError
 
 
+
 class GoogleResult:
     """
     Class representing a search result from Google
