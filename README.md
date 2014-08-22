@@ -1,4 +1,5 @@
-﻿PyGoogler
+PyGoogler
+
 ===================
 PyGoogler is a Python library for scraping Google search results. 
 It's a customized version of [xgoogle](https://pypi.python.org/pypi/xgoogle). 
