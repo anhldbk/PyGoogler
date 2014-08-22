@@ -55,20 +55,6 @@ class GoogleResult:
         """
         return 'Title: %s\nUrl: %s\nDescription: %s' % (self.title, self.url, self.description)
 
-    def toAsciiString(self):
-        """
-        Convert this instance into its  Ascii string representation
-        :return:
-        """
-        return 'Title: %s\nUrl: %s\nDescription: %s' % (
-            self.__getAscii(self.title), self.__getAscii(self.url), self.__getAscii(self.description))
-
-    def __getAscii(self, input):
-        try:
-            return unicodedata.normalize('NFKD', input).encode('ascii', 'ignore')
-        except:
-            return input
-
 
 # noinspection PyClassHasNoInit
 class Googler:
@@ -76,7 +62,6 @@ class Googler:
     Class for googling
     """
     __RESULT_PER_PAGE = 50
-    __USER_AGENT = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'  # Firefox
 
     DOMAIN_ENGLISH = '.com'
     DOMAIN_VIETNAMESE = '.com.vn'
@@ -86,17 +71,19 @@ class Googler:
         Parse a google result to see if it's matched your criteria.
         You should override this function in your subclass
         :param googleResult: an instance of GoogleResult
-        :return: If it's matched, return True and this result will be added to the overal search results.
-                Otherwise, return False.
+        :return: If it's matched, return True and this result will
+            be added to the overal search results. Otherwise, return False.
         """
         return True
 
-    def search(self, keyword, domain, numberOfResults=50):
+    def search(self, keyword, domain, numberOfResults=50, maxRequest=-1):
         """
         Google for a specific keyword
         :param keyword: The keyword
         :param domain: Constants defined by Googler (DOMAIN_ENGLISH, DOMAIN_VIETNAMESE ...)
         :param numberOfResults: Number of results to return
+        :param maxRequest: Maximum search requests to make. If it's set to -1,
+                        we'll take infinite requests to search
         :return: List of GoogleResult instances
         """
         # a trick to make Google not ban us for requesting so often
@@ -106,26 +93,33 @@ class Googler:
         gs.results_per_page = Googler.__RESULT_PER_PAGE
 
         ret = []
-        while True:
-            try:
-                while True:
-                    results = gs.get_results()
-                    if not results or len(results) == 0:
+        requestCount = 0
+        try:
+            while True:
+                results = gs.get_results()
+                if not results or len(results) == 0:
+                    return ret
+
+                for result in results:
+                    g = GoogleResult()
+                    g.description = result.desc
+                    g.url = result.url
+                    g.title = result.title
+                    if self.parse(g):
+                        ret.append(g)
+                        if len(ret) == numberOfResults:
+                            return ret
+
+                # sleep before conducting another search
+                time.sleep(5)
+
+                if maxRequest != -1:
+                    requestCount += 1
+                    if requestCount > maxRequest:
                         return ret
 
-                    for result in results:
-                        g = GoogleResult()
-                        g.description = result.desc
-                        g.url = result.url
-                        g.title = result.title
-                        if self.parse(g):
-                            ret.append(g)
-                            if len(ret) == numberOfResults:
-                                return ret
+        except SearchError as e:
+            print "Search failed: %s" % e
 
-                    # sleep before conducting another search
-                    time.sleep(5)
 
-            except SearchError as e:
-                print "Search failed: %s" % e
-                return ret
+        return ret

@@ -4,10 +4,10 @@ from PyGoogler import Googler
 
 def doSearch(googler):
     # googler: an instance of Googler
-    print '-----------[ Instance %s ]--------------\n' % googler.__class__.__name__
+    print '\n-----------[ Instance %s ]--------------\n' % googler.__class__.__name__
     word = 'bigsonata'
     print 'Searching for %s...' % word
-    results = googler.search(word, Googler.DOMAIN_VIETNAMESE)
+    results = googler.search(word, Googler.DOMAIN_VIETNAMESE, maxRequest=2)
     print 'Result(s) found: %s' % len(results)
 
     count = 0

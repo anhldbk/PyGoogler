@@ -1,6 +1,8 @@
-﻿PyGoogle
+﻿PyGoogler
 ===================
-PyGoogler is a Python library for scraping Google search results. It's a customized version of [xgoogle](https://pypi.python.org/pypi/xgoogle). Several bugs regarding encoding are fixed. PyGoogler is easier to use than [xgoogle](https://pypi.python.org/pypi/xgoogle).
+PyGoogler is a Python library for scraping Google search results. 
+It's a customized version of [xgoogle](https://pypi.python.org/pypi/xgoogle). 
+Several bugs regarding encoding are fixed. PyGoogler is easier to use than [xgoogle](https://pypi.python.org/pypi/xgoogle).
 
 Installation
 -------------
@@ -45,8 +47,8 @@ class MyGoogler(Googler):
         Parse a google result to see if it's matched your criteria.
         You should override this function in your subclass
         :param googleResult: an instance of GoogleResult
-        :return: If it's matched, return True and this result will be added to the overal search results.
-                Otherwise, return False.
+        :return: If it's matched, return True and this result will be 
+                added to the overal search results. Otherwise, return False.
         """
         for prohibited in self.probihitedDomains:
             if prohibited in googleResult.url:
