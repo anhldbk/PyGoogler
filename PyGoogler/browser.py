@@ -82,7 +82,6 @@ class Browser(object):
         self.debug = debug
 
     def get_page(self, url, data=None):
-        print url
         r = requests.get(url)
         return r.text
 
