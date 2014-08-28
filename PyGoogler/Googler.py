@@ -30,6 +30,7 @@
 #
 import time
 import unicodedata
+import urlparse
 
 from search import GoogleSearch, SearchError
 
@@ -53,7 +54,17 @@ class GoogleResult:
         Convert this instance into its String representation
         :return:
         """
-        return 'Title: %s\nUrl: %s\nDescription: %s' % (self.title, self.url, self.description)
+        return u'Title: %s\nUrl: %s\nDescription: %s' % (self.title, self.url, self.description)
+
+    @staticmethod
+    def getRoot(url):
+        """
+        Get root of a specific url
+        :param url: An url
+        :return: The associated root
+        """
+        data = urlparse.urlparse(url)
+        return '%s://%s' % (data.scheme, data.hostname)
 
 
 # noinspection PyClassHasNoInit
@@ -87,7 +98,8 @@ class Googler:
         :return: List of GoogleResult instances
         """
         # a trick to make Google not ban us for requesting so often
-        keyword = keyword.replace(' ', '+')
+        keyword = keyword.replace(u' ', u'+')
+        keyword = u'"%s"' % keyword  # quote it
 
         gs = GoogleSearch(query=keyword, tld=domain)
         gs.results_per_page = Googler.__RESULT_PER_PAGE
@@ -120,6 +132,5 @@ class Googler:
 
         except SearchError as e:
             print "Search failed: %s" % e
-
 
         return ret

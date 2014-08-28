@@ -1,5 +1,5 @@
 # -- coding: utf-8 --
-#!/usr/bin/python
+# !/usr/bin/python
 # encoding: utf-8
 #
 # Peteris Krumins (peter@catonmat.net)
@@ -56,12 +56,12 @@ class SearchResult:
 
 
 class GoogleSearch(object):
-    SEARCH_URL_0 = "https://www.google%(tld)s/search?q=%(query)s"
-    NEXT_PAGE_0 = "https://www.google%(tld)s/search?q=%(query)s&start=%(start)d"
-    SEARCH_URL_1 = "https://www.google%(tld)s/search?q=%(query)s&num=%(num)d"
-    NEXT_PAGE_1 = "https://www.google%(tld)s/search?q=%(query)s&num=%(num)d&start=%(start)d"
+    SEARCH_URL_0 = u"https://www.google%(tld)s/search?q=%(query)s"
+    NEXT_PAGE_0 = u"https://www.google%(tld)s/search?q=%(query)s&start=%(start)d"
+    SEARCH_URL_1 = u"https://www.google%(tld)s/search?q=%(query)s&num=%(num)d"
+    NEXT_PAGE_1 = u"https://www.google%(tld)s/search?q=%(query)s&num=%(num)d&start=%(start)d"
 
-    def __init__(self, query, random_agent=True, debug=False, lang="vi", tld="com.vn", re_search_strings=None):
+    def __init__(self, query, random_agent=True, debug=False, lang=u"vi", tld=u"com.vn", re_search_strings=None):
         self.query = query
         self.debug = debug
         self.browser = Browser(debug=debug)
@@ -127,7 +127,7 @@ class GoogleSearch(object):
             try:
                 num = float(interval)
             except ValueError:
-                raise SearchError, "Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
+                raise SearchError, u"Wrong parameter to first_indexed_in_previous: %s" % (str(interval))
             self._first_indexed_in_previous = 'm' + str(interval)
 
     first_indexed_in_previous = property(_get_first_indexed_in_previous, _set_first_indexed_in_previous,
@@ -193,11 +193,11 @@ class GoogleSearch(object):
             else:
                 url = GoogleSearch.NEXT_PAGE_1
 
-        safe_url = [url % {'query': urllib.quote_plus(self.query),
-                           'start': self._page * self._results_per_page,
-                           'num': self._results_per_page,
-                           'tld': self._tld,
-                           'lang': self._lang}]
+        safe_url = [url % {u'query': self.query,
+                           u'start': self._page * self._results_per_page,
+                           u'num': self._results_per_page,
+                           u'tld': self._tld,
+                           u'lang': self._lang}]
 
         # possibly extend url with optional properties
         if self._first_indexed_in_previous:

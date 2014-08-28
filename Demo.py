@@ -2,10 +2,11 @@
 from PyGoogler import Googler
 
 
+
 def doSearch(googler):
     # googler: an instance of Googler
     print '\n-----------[ Instance %s ]--------------\n' % googler.__class__.__name__
-    word = 'bigsonata'
+    word = '"cách mạng"'
     print 'Searching for %s...' % word
     results = googler.search(word, Googler.DOMAIN_VIETNAMESE, maxRequest=2)
     print 'Result(s) found: %s' % len(results)
@@ -40,4 +41,4 @@ class MyGoogler(Googler):
                 return False
         return True
 
-doSearch(MyGoogler())
+# doSearch(MyGoogler())
